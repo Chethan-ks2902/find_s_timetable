@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Find-S Algorithm - Class Conduction</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        table, th, td {
+            border: 1px solid black;
+        }
+
+        th, td {
+            padding: 8px;
+            text-align: center;
+        }
+
+        th {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        #hypothesis {
+            margin-top: 20px;
+            padding: 10px;
+            border: 1px solid #4CAF50;
+            background-color: #e7f4e4;
+        }
+
+        .delete-button, .edit-button {
+            background-color: #f44336;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+        }
+
+        .delete-button:hover, .edit-button:hover {
+            background-color: #d32f2f;
+        }
+    </style>
+</head>
+<body>
+
+    <h2>Find-S Algorithm - Saturday Class Conduction</h2>
+
+    <table id="data-table">
+        <thead>
+            <tr>
+                <th>Subject</th>
+                <th>Time</th>
+                <th>Guide</th>
+                <th>Venue</th>
+                <th>Class Type</th>
+                <th>Conduction Details</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>DAP</td>
+                <td>9:00-9:55</td>
+                <td>smn</td>
+                <td>1402</td>
+                <td>lecture</td>
+                <td>yes</td>
+                <td><button class="delete-button" onclick="deleteRow(this)">Delete</button></td>
+            </tr>
+            <tr>
+                <td>AI</td>
+                <td>9:55-10:50</td>
+                <td>prp</td>
+                <td>1402</td>
+                <td>lecture</td>
+                <td>yes</td>
+                <td><button class="delete-button" onclick="deleteRow(this)">Delete</button></td>
+            </tr>
+            <tr>
+                <td>S&T</td>
+                <td>11:10-12:05</td>
+                <td>jym</td>
+                <td>1402</td>
+                <td>lecture</td>
+                <td>no</td>
+                <td><button class="delete-button" onclick="deleteRow(this)">Delete</button></td>
+            </tr>
+            <tr>
+                <td>ML</td>
+                <td>12:05-1:00</td>
+                <td>anr</td>
+                <td>1402</td>
+                <td>lecture</td>
+                <td>yes</td>
+                <td><button class="delete-button" onclick="deleteRow(this)">Delete</button></td>
+            </tr>
+            <tr>
+                <td>JAVALAB</td>
+                <td>2:00-3:00</td>
+                <td>grs</td>
+                <td>a2</td>
+                <td>lab</td>
+                <td>no</td>
+                <td><button class="delete-button" onclick="deleteRow(this)">Delete</button></td>
+            </tr>
+            <tr>
+                <td>IOT</td>
+                <td>3:00-4:00</td>
+                <td>atg</td>
+                <td>none</td>
+                <td>none</td>
+                <td>no</td>
+                <td><button class="delete-button" onclick="deleteRow(this)">Delete</button></td>
+            </tr>
+            <tr>
+                <td>TECHSEM</td>
+                <td>4:00-5:00</td>
+                <td>pkb</td>
+                <td>1402</td>
+                <td>seminar</td>
+                <td>yes</td>
+                <td><button class="delete-button" onclick="deleteRow(this)">Delete</button></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <br>
+
+    <button onclick="addRow()">Add Row</button>
+    <button onclick="findSHypothesis()">Find-S Hypothesis</button>
+
+    <div id="hypothesis">
+        <strong>Current Hypothesis:</strong> <span id="current-hypothesis">None</span>
+    </div>
+
+    <script>
+        function addRow() {
+            const table = document.getElementById("data-table").getElementsByTagName('tbody')[0];
+            const newRow = table.insertRow();
+
+            const cell1 = newRow.insertCell(0);
+            const cell2 = newRow.insertCell(1);
+            const cell3 = newRow.insertCell(2);
+            const cell4 = newRow.insertCell(3);
+            const cell5 = newRow.insertCell(4);
+            const cell6 = newRow.insertCell(5);
+            const cell7 = newRow.insertCell(6);
+
+            cell1.innerHTML = "<input type='text' placeholder='Subject'>";
+            cell2.innerHTML = "<input type='text' placeholder='Time'>";
+            cell3.innerHTML = "<input type='text' placeholder='Guide'>";
+            cell4.innerHTML = "<input type='text' placeholder='Venue'>";
+            cell5.innerHTML = "<input type='text' placeholder='Class Type'>";
+            cell6.innerHTML = "<input type='text' placeholder='Conduction Details'>";
+            cell7.innerHTML = "<button class='delete-button' onclick='deleteRow(this)'>Delete</button>";
+
+            // Automatically update hypothesis after adding the new row
+            findSHypothesis();
+        }
+
+        function deleteRow(button) {
+            const row = button.parentNode.parentNode;
+            row.parentNode.removeChild(row);
+            
+            // Automatically update hypothesis after deletion
+            findSHypothesis();
+        }
+
+        function findSHypothesis() {
+            const table = document.getElementById("data-table").getElementsByTagName('tbody')[0];
+            const rows = table.rows;
+            let hypothesis = ["?", "?", "?", "?", "?"];  // Initialize with the most specific hypothesis
+
+            for (let i = 0; i < rows.length; i++) {
+                const cells = rows[i].getElementsByTagName("td");
+                const conducted = cells[5].children[0]?.value.trim().toLowerCase() || cells[5].textContent.trim().toLowerCase();
+
+                if (conducted === "yes") {
+                    for (let j = 0; j < 5; j++) {  // Compare attributes
+                        const value = cells[j].children[0]?.value.trim().toLowerCase() || cells[j].textContent.trim().toLowerCase();
+                        if (hypothesis[j] === "?") {
+                            hypothesis[j] = value;
+                        } else if (hypothesis[j] !== value) {
+                            hypothesis[j] = "?";
+                        }
+                    }
+                }
+            }
+
+            document.getElementById("current-hypothesis").textContent = hypothesis.join(", ");
+        }
+    </script>
+
+</body>
+</html>
